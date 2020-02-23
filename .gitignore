@@ -28,3 +28,6 @@ bin/
 
 ### Cache
 /cache
+
+### Build
+go-rest-mongodb
