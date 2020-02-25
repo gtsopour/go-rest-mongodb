@@ -1,19 +1,19 @@
 package config
 
 import (
-// 	"fmt"
-	"os"
+	"github.com/BurntSushi/toml"
 	mgo "gopkg.in/mgo.v2"
-  "log"
-  "github.com/BurntSushi/toml"
+	"log"
 )
 
-var db *mgo.Database
-
 type Config struct {
+	Port	 string
 	Server   string
 	Database string
 }
+
+var config = Config{}
+var db *mgo.Database
 
 func (c *Config) Read() {
 	if _, err := toml.DecodeFile("config.toml", &c); err != nil {
@@ -21,12 +21,11 @@ func (c *Config) Read() {
 	}
 }
 
-func GetMongoDB() (*mgo.Database, error) {
-	os.Setenv("MONGO_HOST", "mongodb://localhost/")
-	os.Setenv("MONGO_DB_NAME", "go-rest-mongodb")
+func GetDB() (*mgo.Database, error) {
+	config.Read()
 
-	host := os.Getenv("MONGO_HOST")
-	dbName := os.Getenv("MONGO_DB_NAME")
+	host := config.Server
+	dbName := config.Database
 
 	session, err := mgo.Dial(host)
 

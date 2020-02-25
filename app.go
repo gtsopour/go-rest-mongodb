@@ -1,29 +1,26 @@
 package main
+
 import (
-	"fmt"
+	. "go-rest-mongodb/config"
+	"go-rest-mongodb/routers"
 	"log"
 	"net/http"
-	"github.com/gorilla/mux"
-	"go-rest-mongodb/handler"
-	. "go-rest-mongodb/config"
+	"time"
 )
 
 var config = Config{}
 
 func init() {
-  config.Read()
-  fmt.Println(config.Server)
-  fmt.Println(config.Database)
+	config.Read()
 }
 
 func main() {
-	r := mux.NewRouter()
-	r.HandleFunc("/places", handler.GetAllPlaces).Methods("GET")
-	r.HandleFunc("/places/{id}", handler.GetPlaceById).Methods("GET")
-	r.HandleFunc("/places", handler.CreatePlace).Methods("POST")
-	r.HandleFunc("/places", handler.UpdatePlace).Methods("PUT")
-	r.HandleFunc("/places", handler.DeletePlace).Methods("DELETE")
-	if err := http.ListenAndServe(":3000", r); err != nil {
-		log.Fatal(err)
+	routers := routers.Routers()
+	server := &http.Server {
+		Handler: routers,
+		Addr:    config.Port,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
 	}
+	log.Fatal(server.ListenAndServe())
 }
