@@ -15,12 +15,12 @@ func init() {
 }
 
 func main() {
-	routers := routers.Routers()
-	server := &http.Server {
-		Handler: routers,
+	r := routers.Routers()
+	srv := &http.Server {
+		Handler: r,
 		Addr:    config.Port,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	log.Fatal(server.ListenAndServe())
+	log.Fatal(srv.ListenAndServe())
 }

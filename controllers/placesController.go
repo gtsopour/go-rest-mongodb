@@ -27,7 +27,7 @@ var GetAllPlaces = func(w http.ResponseWriter, r * http.Request) {
 }
 
 var GetPlaceById = func(w http.ResponseWriter, r * http.Request) {
-	fmt.Fprintln(w, "Not implemented")
+	fmt.Fprintln(w, "Not implemented!")
 }
 
 var CreatePlace = func(w http.ResponseWriter, r * http.Request) {
@@ -57,7 +57,23 @@ var UpdatePlace = func(w http.ResponseWriter, r * http.Request) {
 }
 
 var DeletePlace = func(w http.ResponseWriter, r * http.Request) {
-	fmt.Fprintln(w, "Not implemented")
+	db, err := config.GetDB()
+	if err != nil {
+		respondWithError(w, http.StatusServiceUnavailable, err.Error())
+		return
+	}
+
+	placeRepository := repository.PlaceRepository(db)
+	defer r.Body.Close()
+	var place models.Place
+	if err := json.NewDecoder(r.Body).Decode(&place); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	if err := placeRepository.Delete(place); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 }
 
 func respondWithError(w http.ResponseWriter, code int, msg string) {

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"go-rest-mongodb/models"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -19,16 +18,21 @@ func PlaceRepository(db *mgo.Database) *placeRepository {
 	}
 }
 
+// Get all Places
 func (p *placeRepository) FindAll() ([]models.Place, error) {
 	var places []models.Place
 	err := p.db.C(Collection).Find(bson.M{}).All(&places)
 	return places, err
 }
 
+// Create a new Place
 func (p *placeRepository) Insert(place models.Place) error {
-	fmt.Println(place)
 	err := p.db.C(Collection).Insert(&place)
 	return err
 }
 
-
+// Delete an existing Place
+func (p *placeRepository) Delete(place models.Place) error {
+	err := p.db.C(Collection).Remove(&place)
+	return err
+}
