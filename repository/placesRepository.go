@@ -32,7 +32,7 @@ func (p *placeRepository) Insert(place models.Place) error {
 }
 
 // Delete an existing Place
-func (p *placeRepository) Delete(place models.Place) error {
-	err := p.db.C(Collection).Remove(&place)
+func (p *placeRepository) Delete(id string) error {
+	err := p.db.C(Collection).Remove(bson.M{"_id": bson.ObjectIdHex(id)})
 	return err
 }

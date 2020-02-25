@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"go-rest-mongodb/config"
 	"go-rest-mongodb/models"
 	"go-rest-mongodb/repository"
@@ -63,14 +64,13 @@ var DeletePlace = func(w http.ResponseWriter, r * http.Request) {
 		return
 	}
 
+	//Vars returns the route variables for the current request, if any.
+	vars := mux.Vars(r)
+	//Get id from the current request
+	id := vars["id"]
+
 	placeRepository := repository.PlaceRepository(db)
-	defer r.Body.Close()
-	var place models.Place
-	if err := json.NewDecoder(r.Body).Decode(&place); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
-		return
-	}
-	if err := placeRepository.Delete(place); err != nil {
+	if err := placeRepository.Delete(id); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
