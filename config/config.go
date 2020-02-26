@@ -1,39 +1,35 @@
 package config
 
 import (
-	"github.com/BurntSushi/toml"
-	mgo "gopkg.in/mgo.v2"
-	"log"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
-type Config struct {
-	Port	 string
-	Server   string
-	Database string
+type Server struct {
+	Port string
 }
 
-var config = Config{}
-var db *mgo.Database
+type Database struct {
+	Uri          string
+	DatabaseName string
+	Username     string
+	Password     string
+}
+
+type Config struct {
+	Server   Server
+	Database Database
+}
 
 func (c *Config) Read() {
-	if _, err := toml.DecodeFile("config.toml", &c); err != nil {
-		log.Fatal(err)
+	viper.SetConfigType("yml")
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Error reading config, %s", err)
 	}
-}
-
-func GetDB() (*mgo.Database, error) {
-	config.Read()
-
-	host := config.Server
-	dbName := config.Database
-
-	session, err := mgo.Dial(host)
-
+	err := viper.Unmarshal(&c)
 	if err != nil {
-		return nil, err
+		log.Fatalf("Error decoding config, %v", err)
 	}
-
-	db := session.DB(dbName)
-
-	return db, nil
 }

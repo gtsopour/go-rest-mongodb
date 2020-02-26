@@ -1,10 +1,12 @@
 package main
 
 import (
+	log "github.com/sirupsen/logrus"
 	. "go-rest-mongodb/config"
+	"go-rest-mongodb/logs"
 	"go-rest-mongodb/routers"
-	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -15,10 +17,16 @@ func init() {
 }
 
 func main() {
+	log.SetOutput(os.Stdout)
+	logFormatter := new(logs.LogFormatter)
+	logFormatter.TimestampFormat = "2006-01-02 15:04:05"
+	logFormatter.LevelDesc = []string{"PANIC", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"}
+	log.SetFormatter(logFormatter)
+
 	r := routers.Routers()
 	srv := &http.Server {
 		Handler: r,
-		Addr:    config.Port,
+		Addr:    config.Server.Port,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

@@ -1,9 +1,9 @@
 package models
 
-import "gopkg.in/mgo.v2/bson"
+import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type Place struct {
-	ID          bson.ObjectId	`bson:"_id" json:"id"`
-	Title       string			`bson:"title" json:"title"`
-	Description string			`bson:"description" json:"description"`
+	ID          primitive.ObjectID	`bson:"_id,omitempty" json:"id,omitempty"`
+	Title       string				`bson:"title,omitempty" json:"title,omitempty"`
+	Description string				`bson:"description,omitempty" json:"description,omitempty"`
 }

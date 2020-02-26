@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gorilla/mux"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -13,7 +13,7 @@ func Routers() *mux.Router {
 
 	//PathPrefix /api adds a matcher for the URL path prefix.
 	s := r.PathPrefix("/api").Subrouter()
-	HandlePlacesRouter(s)
+	AddPlacesRouter(s)
 
 	r.Use(loggingMiddleware)
 	return r
@@ -21,7 +21,7 @@ func Routers() *mux.Router {
 
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println(r.RequestURI)
+		log.Info(r.RequestURI)
 		next.ServeHTTP(w, r)
 	})
 }

@@ -1,0 +1,7 @@
+database:
+  uri: "mongodb://localhost"
+  databasename: "go-rest-mongodb"
+  username: ""
+  password: ""
+server:
+  port: ":3000"
