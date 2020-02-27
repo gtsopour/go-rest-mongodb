@@ -26,6 +26,6 @@ mux: A powerful HTTP router and URL matcher for building Go web servers. https:/
 
 mongo-driver: The MongoDB supported driver for Go. https://github.com/mongodb/mongo-go-driver
 
-viper: Viper is a complete configuration solution for Go applications including 12-Factor apps. https://github.com/toml-lang/toml
+viper: Viper is a complete configuration solution for Go applications including 12-Factor apps. https://github.com/spf13/viper
 
-CompileDaemon: Watches your .go files in a directory and invokes go build if a file changed. https://github.com/spf13/viper
+CompileDaemon: Watches your .go files in a directory and invokes go build if a file changed. https://github.com/githubnemo/CompileDaemon
