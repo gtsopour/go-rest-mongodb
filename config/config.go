@@ -5,6 +5,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+type Config struct {
+	Server   Server
+	Database Database
+}
+
 type Server struct {
 	Port string
 }
@@ -14,11 +19,6 @@ type Database struct {
 	DatabaseName string
 	Username     string
 	Password     string
-}
-
-type Config struct {
-	Server   Server
-	Database Database
 }
 
 func (c *Config) Read() {
