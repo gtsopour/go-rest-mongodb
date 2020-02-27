@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+	. "go-rest-mongodb/config"
 	"go-rest-mongodb/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -12,18 +13,25 @@ import (
 	"time"
 )
 
-type placeRepository struct {
-	collection *mongo.Collection
-}
+type PlacesRepository struct {}
 
-func PlaceRepository(collection *mongo.Collection) *placeRepository {
-	return &placeRepository {
-		collection: collection,
+var config = Config{}
+var collection = new(mongo.Collection)
+
+func init() {
+	config.Read()
+
+	// Connect to DB
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(config.Database.Uri))
+	if err != nil {
+		log.Fatal(err)
 	}
+	collection = client.Database(config.Database.DatabaseName).Collection("Places")
 }
 
 // Get all Places
-func (p *placeRepository) FindAll() ([]models.Place, error) {
+func (p *PlacesRepository) FindAll() ([]models.Place, error) {
 	var places []models.Place
 
 	findOptions := options.Find()
@@ -31,7 +39,7 @@ func (p *placeRepository) FindAll() ([]models.Place, error) {
 
 	ctx, _ := context.WithTimeout(context.Background(), 15*time.Second)
 	// Finding multiple documents returns a cursor
-	cur, err := p.collection.Find(ctx, bson.D{{}}, findOptions)
+	cur, err := collection.Find(ctx, bson.D{{}}, findOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,22 +61,22 @@ func (p *placeRepository) FindAll() ([]models.Place, error) {
 }
 
 // Create a new Place
-func (p *placeRepository) Insert(place models.Place) (interface{}, error) {
+func (p *PlacesRepository) Insert(place models.Place) (interface{}, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	result, err := p.collection.InsertOne(ctx, &place)
+	result, err := collection.InsertOne(ctx, &place)
 	fmt.Println("Inserted a single document: ", result.InsertedID)
 	return result.InsertedID, err
 }
 
 // Delete an existing Place
-func (p *placeRepository) Delete(id string) error {
+func (p *PlacesRepository) Delete(id string) error {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	filter := bson.M{"_id": objectId}
 	if err != nil {
 		log.Fatal(err)
 	}
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	result, err := p.collection.DeleteOne(ctx, filter)
+	result, err := collection.DeleteOne(ctx, filter)
 	fmt.Println("Deleted a single document: ", result.DeletedCount)
 	return err
 }

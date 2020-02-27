@@ -1,35 +1,19 @@
 package controllers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"go-rest-mongodb/models"
-	"go-rest-mongodb/repository"
+	. "go-rest-mongodb/repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
-	"time"
 )
 
-func init() {
-	fmt.Println("Init() Controllers")
-}
+var placesRepository PlacesRepository
 
 var GetAllPlaces = func(w http.ResponseWriter, r * http.Request) {
-	// Connect to DB
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost"))
-	if err != nil {
-		respondWithError(w, http.StatusServiceUnavailable, err.Error())
-		return
-	}
-	collection := client.Database("go-rest-mongodb").Collection("Places")
-	placeRepository := repository.PlaceRepository(collection)
-
-	places, err := placeRepository.FindAll()
+	places, err := placesRepository.FindAll()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -42,23 +26,13 @@ var GetPlaceById = func(w http.ResponseWriter, r * http.Request) {
 }
 
 var CreatePlace = func(w http.ResponseWriter, r * http.Request) {
-	// Connect to DB
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost"))
-	if err != nil {
-		respondWithError(w, http.StatusServiceUnavailable, err.Error())
-		return
-	}
-	collection := client.Database("go-rest-mongodb").Collection("Places")
-	placeRepository := repository.PlaceRepository(collection)
-
 	defer r.Body.Close()
 	var place models.Place
 	if err := json.NewDecoder(r.Body).Decode(&place); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	insertResult, err := placeRepository.Insert(place);
+	insertResult, err := placesRepository.Insert(place);
 	if  err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -72,22 +46,12 @@ var UpdatePlace = func(w http.ResponseWriter, r * http.Request) {
 }
 
 var DeletePlace = func(w http.ResponseWriter, r * http.Request) {
-	// Connect to DB
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost"))
-	if err != nil {
-		respondWithError(w, http.StatusServiceUnavailable, err.Error())
-		return
-	}
-	collection := client.Database("go-rest-mongodb").Collection("Places")
-	placeRepository := repository.PlaceRepository(collection)
-
 	//Vars returns the route variables for the current request, if any.
 	vars := mux.Vars(r)
 	//Get id from the current request
 	id := vars["id"]
 	fmt.Println(id)
-	if err := placeRepository.Delete(id); err != nil {
+	if err := placesRepository.Delete(id); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
