@@ -1,5 +1,10 @@
 # REST API with Go and MongoDB
-REST API with Go and MongoDB
+REST API with Golang and MongoDB.
+* HTTP router
+* CRUD operations
+* MongoDB supported driver for Go 
+* ENV configurations
+* Formatted logs
 
 ## Dependencies
 ``go get github.com/gorilla/mux``  
