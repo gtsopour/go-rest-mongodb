@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 	"go-rest-mongodb/models"
 	. "go-rest-mongodb/repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
 
-var placesRepository = new(PlacesRepository)
+var placesRepository PlacesRepository
 
 var GetAllPlaces = func(w http.ResponseWriter, r * http.Request) {
 	places, err := placesRepository.FindAll()
@@ -18,6 +19,7 @@ var GetAllPlaces = func(w http.ResponseWriter, r * http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+	log.Info(places);
 	respondWithJson(w, http.StatusOK, places)
 }
 
@@ -32,6 +34,7 @@ var CreatePlace = func(w http.ResponseWriter, r * http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
+	log.Info(place);
 	insertResult, err := placesRepository.Insert(place);
 	if  err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())

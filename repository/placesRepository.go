@@ -15,7 +15,7 @@ import (
 
 type PlacesRepository struct {}
 
-var config = new(Config)
+var config Config
 var collection = new(mongo.Collection)
 const PlacesCollection = "Places"
 

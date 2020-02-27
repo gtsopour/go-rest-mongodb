@@ -3,14 +3,13 @@ package main
 import (
 	log "github.com/sirupsen/logrus"
 	. "go-rest-mongodb/config"
-	"go-rest-mongodb/logs"
 	"go-rest-mongodb/routers"
 	"net/http"
 	"os"
 	"time"
 )
 
-var config = new(Config)
+var config Config
 
 func init() {
 	config.Read()
@@ -18,7 +17,7 @@ func init() {
 
 func main() {
 	log.SetOutput(os.Stdout)
-	logFormatter := new(logs.LogFormatter)
+	logFormatter := new(LogFormatter)
 	logFormatter.TimestampFormat = "2006-01-02 15:04:05"
 	logFormatter.LevelDesc = []string{"PANIC", "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"}
 	log.SetFormatter(logFormatter)
