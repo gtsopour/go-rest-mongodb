@@ -3,6 +3,7 @@ package config
 import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"os"
 )
 
 type Config struct {
@@ -23,7 +24,11 @@ type Database struct {
 
 func (c *Config) Read() {
 	viper.SetConfigType("yml")
-	viper.SetConfigName("config")
+	if os.Getenv("ENV") == "prod" {
+		viper.SetConfigName("config-prod")
+	} else {
+		viper.SetConfigName("config")
+	}
 	viper.AddConfigPath(".")
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Error reading config, %s", err)
