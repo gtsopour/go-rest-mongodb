@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-var placesRepository PlacesRepository
+var placesRepository = new(PlacesRepository)
 
 var GetAllPlaces = func(w http.ResponseWriter, r * http.Request) {
 	places, err := placesRepository.FindAll()

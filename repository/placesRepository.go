@@ -15,8 +15,9 @@ import (
 
 type PlacesRepository struct {}
 
-var config = Config{}
+var config = new(Config)
 var collection = new(mongo.Collection)
+const PlacesCollection = "Places"
 
 func init() {
 	config.Read()
@@ -27,7 +28,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	collection = client.Database(config.Database.DatabaseName).Collection("Places")
+	collection = client.Database(config.Database.DatabaseName).Collection(PlacesCollection)
 }
 
 // Get all Places

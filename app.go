@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var config = Config{}
+var config = new(Config)
 
 func init() {
 	config.Read()
