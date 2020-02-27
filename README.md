@@ -15,7 +15,11 @@ REST API with Go and MongoDB
 ``ENV=prod ./go-rest-mongodb``
 
 ## Watch
-``CompileDaemon -command="./go-rest-mongodb"``  
+``CompileDaemon -command="./go-rest-mongodb"``
+
+## API
+###Postman collection
+[Postman collection](/postman-collection.json)
 
 ## Resources
 mux: A powerful HTTP router and URL matcher for building Go web servers. https://github.com/gorilla/mux
